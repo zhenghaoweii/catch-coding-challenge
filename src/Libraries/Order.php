@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries;
-
 
 class Order
 {
@@ -25,24 +23,22 @@ class Order
         })->unique()->count();
     }
 
-
     public function getAverageUnitPrice()
     {
         return $this->getTotalOrderValue() / $this->getTotalUnits();
     }
-
 
     public function getTotalOrderValue()
     {
         $order = $this->order;
         $totalOrderValue = collect($order['items'])->map(function ($item) {
             return [
-                    'orderValue' => $item['quantity'] * $item['unit_price']
+                    'orderValue' => $item['quantity'] * $item['unit_price'],
             ];
         })->sum('orderValue');
 
         // if discounts is applied
-        if ( ! empty($order['discounts'])) {
+        if (!empty($order['discounts'])) {
             // get top discount priority
             $discount = collect($order['discounts'])->sortBy('priority')->first();
 
