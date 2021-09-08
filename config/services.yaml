@@ -20,6 +20,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-
+    App\Command\GetEcommerceOrderCommand:
+        tags:
+            - { name: 'console.command', command: 'catch:export-orders' }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
