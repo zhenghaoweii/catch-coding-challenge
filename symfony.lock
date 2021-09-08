@@ -583,6 +583,9 @@
     "theseer/tokenizer": {
         "version": "1.2.1"
     },
+    "tightenco/collect": {
+        "version": "v8.34.0"
+    },
     "twig/extra-bundle": {
         "version": "v3.3.1"
     },
