@@ -6,7 +6,6 @@ use App\Pipeline\EcommerceOrder\ExcludeZeroOrderValue;
 use App\Pipeline\EcommerceOrder\ExportData;
 use App\Pipeline\EcommerceOrder\ProcessingData;
 use App\Pipeline\EcommerceOrder\SerializeJsonl;
-use App\Service\SiteUpdateManager;
 use League\Pipeline\Pipeline;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,10 +30,8 @@ class GetEcommerceOrderCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
-    : void
+    protected function configure(): void
     {
-
         $this
                 ->addOption(
                         'email',
@@ -48,21 +45,21 @@ class GetEcommerceOrderCommand extends Command
                         InputOption::VALUE_OPTIONAL,
                         'Export to CSV|jsonl|xml|yaml|xsl. Default CSV'
                 );
-
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    : int {
-
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         $email = $input->getOption('email');
-        $type  = in_array(strtolower($input->getOption('type')),
+        $type = in_array(strtolower($input->getOption('type')),
                 ['jsonl', 'xlsx', 'xls', 'yaml', 'xml', 'csv']) ? $input->getOption('type') : 'csv';
 
         $filesystem = new Filesystem();
         $filesystem->remove('public/out.'.strtolower($type));
 
+        // read the json file
         $file = file_get_contents('https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl');
 
+        // execution
         (new Pipeline())
                 ->pipe(new SerializeJsonl())
                 ->pipe(new ExcludeZeroOrderValue())
@@ -81,7 +78,6 @@ class GetEcommerceOrderCommand extends Command
             $this->sendEmail($email, $type);
             $output->writeln('<info>Please check your inbox!</info>');
             $output->writeln('<info>You can download the file on public/out.'.$type.' as well</info>');
-
         } else {
             $output->writeln('<info>You can download the file on public/out.'.$type.'</info>');
         }
@@ -99,6 +95,5 @@ class GetEcommerceOrderCommand extends Command
                 ->html('<p>Attached is the result of the output </p>');
 
         $this->mailer->send($sendEmail);
-
     }
 }
