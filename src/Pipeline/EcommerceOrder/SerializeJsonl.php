@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Pipeline\EcommerceOrder;
-
 
 class SerializeJsonl
 {
